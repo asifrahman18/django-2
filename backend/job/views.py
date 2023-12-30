@@ -14,3 +14,13 @@ def getAllJobs(request):
     serializer = JobSerializer(jobs, many=True)
     
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def getJob(request, pk):
+    
+    job = Job.objects.get(id=pk)
+    
+    serializer = JobSerializer(job, many=False)
+    
+    return Response(serializer.data)
