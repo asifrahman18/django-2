@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-vran15$lopwo5d+bg_%2t7ekk#(_3udz&h=wel*ye^h@k+(rfq'
+SECRET_KEY = 'django-insecure-ap%57o(3n#t@*s6--e0&vkk5&z9*_m52_&uu)wm3v-m(f1n8*0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    'django.contrib.gis'
+    'rest_framework',
+    'job',
 ]
 
 MIDDLEWARE = [
@@ -78,12 +78,8 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'django-test',
-        'USER': 'postgres',
-        'PASSWORD': '18469',
-        'HOST': 'localhost',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -128,10 +124,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-VIRTUAL_ENV_BASE =  os.environ.get('VIRTUAL_ENV')
-
-print(VIRTUAL_ENV_BASE)
-
-GDAL_LIBRARY_PATH =  VIRTUAL_ENV_BASE + '/Lib/site-packages/osgeo/gdal304.dll'
-GEOS_LIBRARY_PATH =  VIRTUAL_ENV_BASE + '/Lib/site-packages/osgeo/geos_c.dll'
