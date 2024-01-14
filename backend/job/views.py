@@ -22,13 +22,22 @@ from rest_framework.views import APIView
 
 from rest_framework import status
 
+from .filters import JobsFilter
+
 # Create your views here.
 
 
-class JobsViewSet(viewsets.ModelViewSet):
-    # model = Job
-    queryset = Job.objects.all()
-    serializer_class = JobSerializer
+# class JobsViewSet(viewsets.ModelViewSet):
+#     # model = Job
+#     queryset = Job.objects.all()
+#     serializer_class = JobSerializer
+
+
+class AllJobsView(APIView):
+    def get(self, request, format=None):
+        filterset = JobsFilter(request.GET, queryset=Job.objects.all().order_by('id'))
+        serializer = JobSerializer(filterset.qs, many=True)
+        return Response(serializer.data)
 
 
 class JobDetailView(APIView):
@@ -201,9 +210,9 @@ class TopicStatView(APIView):
 # @api_view(['GET'])
 # def getAllJobs(request):
     
-#     jobs = Job.objects.all()
+#     filterset = JobsFilter(request.GET, queryset=Job.objects.all().order_by('id'))
     
-#     serializer = JobSerializer(jobs, many=True)
+#     serializer = JobSerializer(filterset.qs, many=True)
     
 #     return Response(serializer.data)
 
