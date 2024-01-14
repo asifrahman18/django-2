@@ -2,10 +2,13 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Job
-from .serializers import JobSerializer
+from .serializers import JobSerializer, SignUpSerializer, UserSerializer
 import json
 from .forms import JobForm
 from rest_framework import viewsets
+
+from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 
 from django.views.generic.edit import CreateView
 
@@ -65,9 +68,7 @@ class AddJobView(APIView):
         openings = request.data.get('openings')
         company = request.data.get('company')
         
-        # Validate data
-        
-        # Create job model object
+
         job = Job() 
         job.title = title
         job.description = description
@@ -134,6 +135,52 @@ class TopicStatView(APIView):
         )
 
         return Response(stats)
+
+
+
+
+class RegisterView(APIView):
+    def post(self, request, format=None):
+        data = request.data
+        user_serializer = SignUpSerializer(data=data)
+
+        if user_serializer.is_valid():
+            if not User.objects.filter(email=data['email']).exists():
+                user = User.objects.create(
+                    first_name=data['first_name'],
+                    last_name=data['last_name'],
+                    email=data['email'],
+                    password=make_password(data['password']),
+                    username=data['email']
+                )
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                return Response({'message': 'User with this email already exists!'}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+# @api_view(['POST'])
+# def register(request):
+#     data = request.data
+    
+#     user = SignUpSerializer(data=data)
+    
+#     if user.is_valid:
+#         if not User.objects.filter(email=data['email']).exists():
+#             user = User.objects.create(
+#                 first_name = data['first_name'],
+#                 last_name = data['last_name'],
+#                 email = data['email'],
+#                 password = make_password(data['password']),
+#                 username = data['email']
+#             )
+#             return Response(status=status.HTTP_201_CREATED)
+#         else:
+#             return Response({'message': 'User with this email already exists!'}, status=status.HTTP_400_BAD_REQUEST)
+#     else:
+#         return Response(user.errors)
 
 
 # @api_view(['GET'])
