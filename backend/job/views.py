@@ -2,11 +2,11 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .models import Job
-from .serializers import JobSerializer, SignUpSerializer, UserSerializer
+from .models import Job, Company
+from .serializers import JobSerializer, SignUpSerializer, UserSerializer, CompanySerializer
 import json
 from .forms import JobForm
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
@@ -76,6 +76,23 @@ class JobDetailView(APIView):
 #     serializer_class = JobSerializer
 #     queryset = Job.objects.all()
 
+
+
+class CompanyCreateView(generics.CreateAPIView):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+
+    def create(self, request, *args, **kwargs):
+        user_id = self.kwargs.get('user_id')  # Extract user_id from URL
+        user = get_object_or_404(User, pk=user_id)
+        
+        request.data['user'] = user.id
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class AddJobView(APIView):

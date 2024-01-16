@@ -14,8 +14,8 @@ class Company(models.Model):
     location= models.CharField(max_length=200,null=True)
 
     createdAt= models.DateTimeField(auto_now_add=True,null=True)
-    phone = models.IntegerField(null=True)
-    user= models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    phone = models.CharField(max_length=15, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='companies')
     
     
     def __str__(self):
@@ -59,7 +59,9 @@ class Job(models.Model):
     openings= models.IntegerField(default=1,null=True)
     createdAt= models.DateTimeField(auto_now_add=True,null=True)
     expiresAt= models.DateTimeField(expireDate,null=True)
-    company= models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
-    #company= models.CharField(max_length=30,null=True)
-    user= models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True, related_name='jobs')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user_jobs')
+    
+    def __str__(self):
+        return f"{self.title}"
 

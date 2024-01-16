@@ -30,6 +30,7 @@ urlpatterns = [
     path('user/me/', CurrentUserView.as_view(), name='current_user'),
     
     path('user/<int:user_id>/register/', CompanyCreateView.as_view(), name='register_company'),
+
     
     
     
@@ -42,4 +43,5 @@ urlpatterns = [
     
     #create job from company
     path('user/<int:user_id>/company/<int:comp_id>/addjob/', AddJobView.as_view(), name='register_company'),
+
 ]
