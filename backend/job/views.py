@@ -82,6 +82,18 @@ class CompanyCreateView(generics.CreateAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
+    def create(self, request, *args, **kwargs):
+        user_id = self.kwargs.get('user_id')  # Extract user_id from URL
+        user = get_object_or_404(User, pk=user_id)
+        
+        request.data['user'] = user.id
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 class AddJobView(APIView):
     permission_classes = [IsAuthenticated]
