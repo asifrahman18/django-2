@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 # from . import views
-from job.views import AllJobsView, AddJobView, UpdateJobView, JobDetailView, DeleteJobView, TopicStatView, RegisterView, CurrentUserView
+from job.views import AllJobsView, AddJobView, UpdateJobView, JobDetailView, DeleteJobView, TopicStatView, RegisterView, CurrentUserView, CompanyCreateView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenVerifyView, TokenRefreshView
 
 router = DefaultRouter()
@@ -27,6 +27,19 @@ urlpatterns = [
     path('user/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('user/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
     
-    path('user/me', CurrentUserView.as_view(), name='current_user'),
+    path('user/me/', CurrentUserView.as_view(), name='current_user'),
     
+    path('user/<int:user_id>/register/', CompanyCreateView.as_view(), name='register_company'),
+    
+    
+    
+    
+    
+    
+    #todo
+    #show company(s) under an user
+    path('user/<int:user_id>/copmpany/', CompanyView.as_view(), name='register_company'),
+    
+    #create job from company
+    path('user/<int:user_id>/company/<int:comp_id>/addjob/', AddJobView.as_view(), name='register_company'),
 ]
