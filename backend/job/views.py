@@ -1,5 +1,6 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Job
 from .serializers import JobSerializer, SignUpSerializer, UserSerializer
@@ -163,8 +164,21 @@ class RegisterView(APIView):
 
 
 
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, format=None):
+        user_serializer = UserSerializer(request.user)
+        return Response(user_serializer.data, status=status.HTTP_200_OK)
 
 
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
+# def currentUser(request):
+    
+#     user = UserSerializer(request.user)
+    
+#     return Response(user.data)
 
 
 
