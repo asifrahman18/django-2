@@ -5,6 +5,23 @@ from django.contrib.auth.models import User
 # Create your models here.
 
 
+
+
+class Company(models.Model):
+    name= models.CharField(max_length=200,null=True)
+    description= models.TextField(null=True)
+    email= models.EmailField(null=True)
+    location= models.CharField(max_length=200,null=True)
+
+    createdAt= models.DateTimeField(auto_now_add=True,null=True)
+    phone = models.IntegerField(null=True)
+    user= models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    
+    
+    def __str__(self):
+        return f"{self.name}"
+
+
 class JobType(models.TextChoices):
     Training = 'Training'
     Internship = 'Internship'
@@ -42,7 +59,7 @@ class Job(models.Model):
     openings= models.IntegerField(default=1,null=True)
     createdAt= models.DateTimeField(auto_now_add=True,null=True)
     expiresAt= models.DateTimeField(expireDate,null=True)
-    #company: models.ForeignKey(Company, on_delete=models.SET_NULL)
-    company= models.CharField(max_length=30,null=True)
+    company= models.ForeignKey(Company, on_delete=models.CASCADE, null=True)
+    #company= models.CharField(max_length=30,null=True)
     user= models.ForeignKey(User, on_delete=models.CASCADE,null=True)
 

@@ -12,6 +12,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
 from django.views.generic.edit import CreateView
+from rest_framework.generics import CreateAPIView
 
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -56,7 +57,30 @@ class JobDetailView(APIView):
 
 
 
+# def addJob(request):
+    
+#     data = request.data
+    
+#     job = Job.objects.create(**data)
+    
+#     serializer = Jobserializer(job, many=False)
+    
+#     return Response(serializer.data)
+
+
+
+# class AddJobView(CreateAPIView):
+    
+#     permission_classes = [IsAuthenticated]
+#     request.data['user'] = request.user
+#     serializer_class = JobSerializer
+#     queryset = Job.objects.all()
+
+
+
 class AddJobView(APIView):
+    permission_classes = [IsAuthenticated]
+    # request.data['user'] = request.user
     def post(self, request):
         # Get data from request
         title = request.data.get('title') 
@@ -89,6 +113,7 @@ class AddJobView(APIView):
 
 
 class UpdateJobView(APIView):
+    permission_classes = [IsAuthenticated]
     def get_object(self, pk):
         try:
             return Job.objects.get(pk=pk)
@@ -115,6 +140,7 @@ class UpdateJobView(APIView):
 
 
 class DeleteJobView(APIView):
+    permission_classes = [IsAuthenticated]
     def delete(self, request, pk, format=None):
         job = get_object_or_404(Job, pk=pk)
         job.delete()
