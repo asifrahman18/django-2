@@ -27,21 +27,20 @@ from rest_framework.views import APIView
 
 from rest_framework import status
 
-from .filters import JobsFilter
-
-# Create your views here.
-
-
-# class JobsViewSet(viewsets.ModelViewSet):
-#     # model = Job
-#     queryset = Job.objects.all()
-#     serializer_class = JobSerializer
+from .filters import JobsFilter, CompanyFilter
 
 
 class AllJobsView(APIView):
     def get(self, request, format=None):
         filterset = JobsFilter(request.GET, queryset=Job.objects.all().order_by('id'))
         serializer = JobSerializer(filterset.qs, many=True)
+        return Response(serializer.data)
+
+
+class AllCompaniesView(APIView):
+    def get(self, request, format=None):
+        filterset = CompanyFilter(request.GET, queryset=Company.objects.all().order_by('id'))
+        serializer = CompanySerializer(filterset.qs, many=True)
         return Response(serializer.data)
 
 
@@ -56,43 +55,34 @@ class JobDetailView(APIView):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
+class CompanyDetailView(APIView):
 
-# def addJob(request):
-    
-#     data = request.data
-    
-#     job = Job.objects.create(**data)
-    
-#     serializer = Jobserializer(job, many=False)
-    
-#     return Response(serializer.data)
-
+    def get(self, request, pk):
+        try: 
+            job = company.objects.get(id=pk) 
+            serializer = CompanySerializer(job) 
+            return Response(serializer.data)
+        except Job.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
-# class AddJobView(CreateAPIView):
-    
+
+# class UserCompaniesListView(generics.ListAPIView):
+#     serializer_class = CompanyListSerializer
 #     permission_classes = [IsAuthenticated]
-#     request.data['user'] = request.user
-#     serializer_class = JobSerializer
-#     queryset = Job.objects.all()
+
+#     def get_queryset(self):
+#         user = self.request.user
+#         return Company.objects.filter(user=user)
+
 
 
 
 class CompanyCreateView(generics.CreateAPIView):
+    permission_classes = [IsAuthenticated]
+    
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
-
-    def create(self, request, *args, **kwargs):
-        user_id = self.kwargs.get('user_id')  # Extract user_id from URL
-        user = get_object_or_404(User, pk=user_id)
-        
-        request.data['user'] = user.id
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 class AddJobView(APIView):
